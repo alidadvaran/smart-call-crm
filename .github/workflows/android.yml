@@ -10,6 +10,9 @@ on:
         required: false
         default: "https://CHANGE-ME.example.com/"
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -23,12 +26,10 @@ jobs:
           java-version: "17"
 
       # ubuntu-latest ships a pre-installed Android SDK with cmdline-tools.
-      # We just accept licenses and make sure the exact packages are present.
       - name: Install Android SDK packages
         run: |
           set -e
           SDK="${ANDROID_SDK_ROOT:-$ANDROID_HOME}"
-          echo "Using SDK at: $SDK"
           SDKMGR="$SDK/cmdline-tools/latest/bin/sdkmanager"
           yes | "$SDKMGR" --licenses > /dev/null || true
           "$SDKMGR" "platform-tools" "platforms;android-34" "build-tools;34.0.0"
@@ -40,6 +41,18 @@ jobs:
           ./gradlew :app:assembleDebug --stacktrace --no-daemon \
             -PserverUrl="${{ github.event.inputs.serverUrl || 'https://CHANGE-ME.example.com/' }}" \
             2>&1 | tee build-output.log
+
+      # On failure, post the extracted errors as a commit comment so they can
+      # be read back through api.github.com.
+      - name: Report build errors
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          ERR=$(grep -nE "^e: |error:|FAILURE:|What went wrong|FAILED$|Caused by:|Unresolved reference|Compilation error" build-output.log | head -120 || true)
+          [ -z "$ERR" ] && ERR="$(tail -150 build-output.log)"
+          jq -n --arg b "$(printf 'CI build failed — extracted errors:\n\n```\n%s\n```' "$ERR")" '{body:$b}' \
+            | gh api -X POST "repos/${{ github.repository }}/commits/${{ github.sha }}/comments" --input -
 
       - name: Upload build log
         if: always()
