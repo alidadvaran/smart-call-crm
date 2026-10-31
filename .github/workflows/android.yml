@@ -22,11 +22,32 @@ jobs:
           distribution: temurin
           java-version: "17"
 
-      - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
+      # ubuntu-latest ships a pre-installed Android SDK with cmdline-tools.
+      # We just accept licenses and make sure the exact packages are present.
+      - name: Install Android SDK packages
+        run: |
+          set -e
+          SDK="${ANDROID_SDK_ROOT:-$ANDROID_HOME}"
+          echo "Using SDK at: $SDK"
+          SDKMGR="$SDK/cmdline-tools/latest/bin/sdkmanager"
+          yes | "$SDKMGR" --licenses > /dev/null || true
+          "$SDKMGR" "platform-tools" "platforms;android-34" "build-tools;34.0.0"
 
       - name: Build debug APK
-        run: ./gradlew :app:assembleDebug --stacktrace -PserverUrl="${{ github.event.inputs.serverUrl || 'https://CHANGE-ME.example.com/' }}"
+        run: |
+          chmod +x ./gradlew
+          set -o pipefail
+          ./gradlew :app:assembleDebug --stacktrace --no-daemon \
+            -PserverUrl="${{ github.event.inputs.serverUrl || 'https://CHANGE-ME.example.com/' }}" \
+            2>&1 | tee build-output.log
+
+      - name: Upload build log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-log
+          path: build-output.log
+          if-no-files-found: warn
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
