@@ -1,0 +1,104 @@
+<resources>
+    <string name="app_name">مدیریت تماس‌ها</string>
+
+    <!-- Navigation -->
+    <string name="nav_dashboard">داشبورد</string>
+    <string name="nav_calls">تماس‌ها</string>
+    <string name="nav_customers">مشتریان</string>
+    <string name="nav_followups">پیگیری‌ها</string>
+    <string name="nav_reports">گزارش‌ها</string>
+    <string name="nav_devices">دستگاه‌ها</string>
+    <string name="nav_settings">تنظیمات</string>
+
+    <!-- Permissions -->
+    <string name="perm_title">دسترسی به گزارش تماس</string>
+    <string name="perm_rationale">این برنامه برای ثبت سوابق تماس شما به مجوز «گزارش تماس» و «مخاطبین» نیاز دارد. داده‌ها فقط روی دستگاه و سرور شخصی شما ذخیره می‌شوند و صدای مکالمه ضبط نمی‌شود.</string>
+    <string name="perm_grant">اعطای مجوز</string>
+    <string name="perm_consent">با اعطای مجوز، با جمع‌آوری سوابق تماس برای استفاده شخصی موافقت می‌کنم.</string>
+    <string name="perm_denied_settings">مجوز رد شد. برای فعال‌سازی به تنظیمات برنامه بروید.</string>
+
+    <!-- Call types -->
+    <string name="call_incoming">ورودی</string>
+    <string name="call_outgoing">خروجی</string>
+    <string name="call_missed">ازدست‌رفته</string>
+    <string name="call_rejected">ردشده</string>
+    <string name="call_blocked">مسدودشده</string>
+    <string name="call_voicemail">پیام صوتی</string>
+    <string name="call_unknown">نامشخص</string>
+
+    <!-- Dashboard -->
+    <string name="dash_total_calls">کل تماس‌ها</string>
+    <string name="dash_incoming">ورودی</string>
+    <string name="dash_outgoing">خروجی</string>
+    <string name="dash_missed">ازدست‌رفته</string>
+    <string name="dash_talk_time">مجموع مکالمه</string>
+    <string name="dash_new_customers">مشتریان جدید</string>
+    <string name="dash_pending_followups">پیگیری‌های معوق</string>
+    <string name="dash_filter_device">دستگاه</string>
+    <string name="dash_filter_all_devices">همه دستگاه‌ها</string>
+    <string name="dash_filter_date">بازه زمانی</string>
+    <string name="dash_range_today">امروز</string>
+    <string name="dash_range_7d">۷ روز</string>
+    <string name="dash_range_30d">۳۰ روز</string>
+    <string name="dash_range_all">همه</string>
+    <string name="dash_top_numbers">پرتکرارترین شماره‌ها</string>
+
+    <!-- Customers -->
+    <string name="cust_status_new">سرنخ جدید</string>
+    <string name="cust_status_contacted">تماس‌گرفته‌شده</string>
+    <string name="cust_status_qualified">واجد شرایط</string>
+    <string name="cust_status_followup">در حال پیگیری</string>
+    <string name="cust_status_won">موفق</string>
+    <string name="cust_status_lost">ازدست‌رفته</string>
+    <string name="cust_company">شرکت</string>
+    <string name="cust_notes">یادداشت</string>
+    <string name="cust_last_call">آخرین تماس</string>
+    <string name="cust_call_count">تعداد تماس</string>
+    <string name="cust_save">ذخیره</string>
+    <string name="cust_search_hint">جستجوی نام یا شماره…</string>
+
+    <!-- Follow-ups -->
+    <string name="fu_add">افزودن پیگیری</string>
+    <string name="fu_due">سررسید</string>
+    <string name="fu_done">انجام شد</string>
+    <string name="fu_pending">معوق</string>
+    <string name="fu_overdue">عقب‌افتاده</string>
+
+    <!-- Reports -->
+    <string name="rep_daily">گزارش روزانه</string>
+    <string name="rep_weekly">گزارش هفتگی</string>
+    <string name="rep_manual">گزارش دستی</string>
+    <string name="rep_send_now">ارسال اکنون</string>
+    <string name="rep_recipient">ایمیل گیرنده</string>
+    <string name="rep_last_sent">آخرین ارسال</string>
+    <string name="rep_format">قالب خروجی</string>
+
+    <!-- Devices -->
+    <string name="dev_this_device">این دستگاه</string>
+    <string name="dev_rename">تغییر نام</string>
+    <string name="dev_role_primary">گوشی اصلی</string>
+    <string name="dev_role_secondary">گوشی دوم</string>
+    <string name="dev_last_seen">آخرین اتصال</string>
+    <string name="dev_registered">ثبت‌شده</string>
+    <string name="dev_not_registered">ثبت‌نشده</string>
+
+    <!-- Sync / Settings -->
+    <string name="sync_now">همگام‌سازی دستی</string>
+    <string name="sync_last_success">آخرین همگام‌سازی موفق</string>
+    <string name="sync_pending">در صف ارسال</string>
+    <string name="sync_never">هرگز</string>
+    <string name="set_server_url">آدرس سرور</string>
+    <string name="set_wifi_only">فقط با وای‌فای</string>
+    <string name="set_auto_sync">همگام‌سازی خودکار</string>
+    <string name="set_work_personal">تفکیک تماس‌های کاری و شخصی</string>
+    <string name="set_delete_all">حذف کامل اطلاعات</string>
+    <string name="set_delete_confirm">همه داده‌های محلی حذف شوند؟ این عمل بازگشت‌ناپذیر است.</string>
+    <string name="set_save">ذخیره تنظیمات</string>
+
+    <!-- Common -->
+    <string name="common_cancel">انصراف</string>
+    <string name="common_ok">تأیید</string>
+    <string name="common_refresh">به‌روزرسانی</string>
+    <string name="common_empty">چیزی برای نمایش نیست</string>
+    <string name="common_sim">سیم‌کارت</string>
+</resources>

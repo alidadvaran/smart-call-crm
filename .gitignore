@@ -1,0 +1,25 @@
+# Android / Gradle
+.gradle/
+build/
+app/build/
+local.properties
+*.apk
+*.aab
+*.keystore
+*.jks
+keystore.properties
+captures/
+.cxx/
+
+# IDE
+.idea/
+*.iml
+
+# Node (server)
+server/node_modules/
+server/.env
+npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
