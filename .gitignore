@@ -18,6 +18,7 @@ captures/
 # Node (server)
 server/node_modules/
 server/.env
+deploy/.env
 npm-debug.log*
 
 # OS
