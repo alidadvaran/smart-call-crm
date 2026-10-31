@@ -54,6 +54,54 @@ jobs:
           jq -n --arg b "$(printf 'CI build failed — extracted errors:\n\n```\n%s\n```' "$ERR")" '{body:$b}' \
             | gh api -X POST "repos/${{ github.repository }}/commits/${{ github.sha }}/comments" --input -
 
+      # Build a SIGNED RELEASE and publish it to the backend so devices can
+      # self-update. Runs only when the signing + upload secrets are set.
+      # Required repo secrets:
+      #   KEYSTORE_BASE64, KEYSTORE_PASSWORD, KEY_ALIAS, KEY_PASSWORD
+      #   SMARTCALL_UPDATE_URL  (e.g. https://your-domain/api/app/upload)
+      #   SMARTCALL_UPLOAD_TOKEN, SMARTCALL_SERVER_URL
+      - name: Build & publish signed release
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+          UPDATE_URL: ${{ secrets.SMARTCALL_UPDATE_URL }}
+          UPLOAD_TOKEN: ${{ secrets.SMARTCALL_UPLOAD_TOKEN }}
+          SERVER_URL: ${{ secrets.SMARTCALL_SERVER_URL }}
+        run: |
+          if [ -z "$KEYSTORE_BASE64" ] || [ -z "$UPDATE_URL" ]; then
+            echo "Release/upload secrets not set — skipping signed release & publish."
+            exit 0
+          fi
+          echo "$KEYSTORE_BASE64" | base64 -d > release.jks
+          cat > keystore.properties <<EOF
+          storeFile=$(pwd)/release.jks
+          storePassword=$KEYSTORE_PASSWORD
+          keyAlias=$KEY_ALIAS
+          keyPassword=$KEY_PASSWORD
+          EOF
+          ./gradlew :app:assembleRelease --no-daemon \
+            -PserverUrl="${SERVER_URL:-https://CHANGE-ME.example.com/}"
+          APK=app/build/outputs/apk/release/app-release.apk
+          AAPT=$(ls "$ANDROID_SDK_ROOT"/build-tools/*/aapt | sort | tail -1)
+          VC=$("$AAPT" dump badging "$APK" | sed -n "s/.*versionCode='\([0-9]*\)'.*/\1/p")
+          VN=$("$AAPT" dump badging "$APK" | sed -n "s/.*versionName='\([^']*\)'.*/\1/p")
+          echo "Publishing versionCode=$VC versionName=$VN to backend"
+          curl -fsS -X POST "$UPDATE_URL?versionCode=$VC&versionName=$VN" \
+            -H "x-admin-token: $UPLOAD_TOKEN" \
+            -H "Content-Type: application/vnd.android.package-archive" \
+            --data-binary @"$APK"
+          rm -f release.jks keystore.properties
+
+      - name: Upload release APK (if built)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: smartcall-release-apk
+          path: app/build/outputs/apk/release/*.apk
+          if-no-files-found: ignore
+
       - name: Upload build log
         if: always()
         uses: actions/upload-artifact@v4

@@ -32,6 +32,11 @@ services:
       ENABLE_WEEKLY_REPORT: ${ENABLE_WEEKLY_REPORT:-true}
       DASHBOARD_USER: ${DASHBOARD_USER}
       DASHBOARD_PASS: ${DASHBOARD_PASS}
+      APK_DIR: /data/apk
+      APP_UPLOAD_TOKEN: ${APP_UPLOAD_TOKEN}
+      PUBLIC_BASE_URL: https://${DOMAIN}
+    volumes:
+      - apkdata:/data/apk
     depends_on:
       db:
         condition: service_healthy
@@ -55,3 +60,4 @@ volumes:
   dbdata:
   caddydata:
   caddyconfig:
+  apkdata:

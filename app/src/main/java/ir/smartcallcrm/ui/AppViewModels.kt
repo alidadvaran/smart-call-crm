@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import ir.smartcallcrm.SmartCallApp
+import ir.smartcallcrm.core.AdminAuth
 import ir.smartcallcrm.core.SecureStore
 import ir.smartcallcrm.core.SettingsStore
 import ir.smartcallcrm.core.TimeUtils
@@ -210,6 +211,10 @@ class SettingsViewModel(
         callRepo.deleteAll()
         customerRepo.deleteAll()
         secure.clear()
+    }
+
+    fun changeAdminPassword(newPassword: String) {
+        AdminAuth.changePassword(secure, newPassword)
     }
 }
 

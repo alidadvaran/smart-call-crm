@@ -1,14 +1,19 @@
 package ir.smartcallcrm.data.remote
 
 import ir.smartcallcrm.data.remote.dto.Ack
+import ir.smartcallcrm.data.remote.dto.AppReleaseDto
 import ir.smartcallcrm.data.remote.dto.RegisterDeviceRequest
 import ir.smartcallcrm.data.remote.dto.RegisterDeviceResponse
 import ir.smartcallcrm.data.remote.dto.ReportRequest
 import ir.smartcallcrm.data.remote.dto.UploadCallsRequest
 import ir.smartcallcrm.data.remote.dto.UploadCallsResponse
 import ir.smartcallcrm.data.remote.dto.UploadCustomersRequest
+import okhttp3.ResponseBody
 import retrofit2.http.Body
+import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.Streaming
+import retrofit2.http.Url
 
 interface ApiService {
 
@@ -23,4 +28,12 @@ interface ApiService {
 
     @POST("api/reports/send")
     suspend fun sendReport(@Body body: ReportRequest): Ack
+
+    @GET("api/app/latest")
+    suspend fun latestRelease(): AppReleaseDto
+
+    /** Full URL is returned by latestRelease(); stream it to a file. */
+    @Streaming
+    @GET
+    suspend fun downloadApk(@Url url: String): ResponseBody
 }

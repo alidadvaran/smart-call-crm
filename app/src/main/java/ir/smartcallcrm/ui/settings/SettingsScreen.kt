@@ -26,6 +26,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ir.smartcallcrm.ui.SectionTitle
@@ -40,6 +41,8 @@ fun SettingsScreen(vm: SettingsViewModel) {
     val splitWork by vm.splitWork.collectAsStateWithLifecycle()
     var urlDraft by remember(serverUrl) { mutableStateOf(serverUrl) }
     var confirmDelete by remember { mutableStateOf(false) }
+    var newPassword by remember { mutableStateOf("") }
+    var passwordMsg by remember { mutableStateOf<String?>(null) }
 
     Column(
         Modifier.fillMaxWidth().verticalScroll(rememberScrollState()).padding(16.dp),
@@ -62,6 +65,28 @@ fun SettingsScreen(vm: SettingsViewModel) {
         Button(onClick = { vm.syncNow(context) }, modifier = Modifier.fillMaxWidth()) {
             Text("همگام‌سازی دستی")
         }
+
+        SectionTitle("رمز عبور مدیریت")
+        OutlinedTextField(
+            value = newPassword,
+            onValueChange = { newPassword = it; passwordMsg = null },
+            label = { Text("رمز عبور جدید") },
+            singleLine = true,
+            visualTransformation = PasswordVisualTransformation(),
+            modifier = Modifier.fillMaxWidth()
+        )
+        Button(
+            onClick = {
+                if (newPassword.length < 4) {
+                    passwordMsg = "رمز باید حداقل ۴ کاراکتر باشد"
+                } else {
+                    vm.changeAdminPassword(newPassword)
+                    newPassword = ""
+                    passwordMsg = "رمز عبور تغییر کرد"
+                }
+            }
+        ) { Text("تغییر رمز عبور") }
+        passwordMsg?.let { Text(it, color = MaterialTheme.colorScheme.outline) }
 
         SectionTitle("حریم خصوصی")
         Card(Modifier.fillMaxWidth()) {

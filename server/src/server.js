@@ -7,6 +7,7 @@ const { generateToken, hashToken, requireDevice } = require('./auth');
 const { sendReport } = require('./mailer');
 const { computeAggregates, buildHtml } = require('./reports');
 const { startCron } = require('./cron');
+const appupdate = require('./appupdate');
 
 const app = express();
 app.use(express.json({ limit: '8mb' }));
@@ -123,6 +124,9 @@ app.post('/api/reports/send', requireDevice, async (req, res) => {
   const result = await sendReport(type, recipient);
   res.json({ ok: result.ok, message: result.message });
 });
+
+// ---- Self-update endpoints (upload / latest / download) -----------------
+appupdate.register(app, requireDevice);
 
 // ---- Minimal web dashboard (HTTP Basic auth) ----------------------------
 function dashboardAuth(req, res, next) {

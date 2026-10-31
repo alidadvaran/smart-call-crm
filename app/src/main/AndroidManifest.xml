@@ -16,6 +16,9 @@
     <!-- Show sync/scan status notifications (Android 13+ asks at runtime). -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
+    <!-- Install app updates fetched from the backend. -->
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+
     <application
         android:name=".SmartCallApp"
         android:allowBackup="true"
@@ -49,6 +52,25 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="android.intent.action.QUICKBOOT_POWERON" />
                 <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+            </intent-filter>
+        </receiver>
+
+        <!-- Receives PackageInstaller results for self-update. -->
+        <receiver
+            android:name=".sync.InstallResultReceiver"
+            android:exported="false" />
+
+        <!-- Device-owner admin: enables fully silent updates and blocks easy
+             uninstall once provisioned via ADB. -->
+        <receiver
+            android:name=".admin.DeviceOwnerReceiver"
+            android:permission="android.permission.BIND_DEVICE_ADMIN"
+            android:exported="true">
+            <meta-data
+                android:name="android.app.device_admin"
+                android:resource="@xml/device_admin" />
+            <intent-filter>
+                <action android:name="android.app.action.DEVICE_ADMIN_ENABLED" />
             </intent-filter>
         </receiver>
     </application>

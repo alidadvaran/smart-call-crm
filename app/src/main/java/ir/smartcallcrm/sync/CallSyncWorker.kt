@@ -45,6 +45,10 @@ class CallSyncWorker(
                 .getOrNull()
                 ?.let { if (!it.success && isRetryRun()) return Result.retry() }
         }
+
+        // Check for and apply an app update (silent if device owner).
+        runCatching { UpdateManager.checkAndMaybeUpdate(applicationContext) }
+
         return Result.success()
     }
 

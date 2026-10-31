@@ -69,3 +69,11 @@ data class Ack(
     val ok: Boolean = true,
     val message: String? = null
 )
+
+@Serializable
+data class AppReleaseDto(
+    val versionCode: Int = 0,
+    val versionName: String = "",
+    val url: String? = null,
+    val sizeBytes: Long = 0
+)

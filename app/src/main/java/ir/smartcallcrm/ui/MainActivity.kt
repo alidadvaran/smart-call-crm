@@ -31,6 +31,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -51,6 +52,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import ir.smartcallcrm.SmartCallApp
 import ir.smartcallcrm.sync.SyncScheduler
+import ir.smartcallcrm.sync.UpdateManager
 import ir.smartcallcrm.ui.calls.CallLogScreen
 import ir.smartcallcrm.ui.customers.CustomersScreen
 import ir.smartcallcrm.ui.dashboard.DashboardScreen
@@ -83,6 +85,11 @@ private fun AppRoot() {
     val app = context.applicationContext as SmartCallApp
     val factory = remember { AppViewModelFactory(app) }
 
+    // Check for an app update when the UI opens.
+    LaunchedEffect(Unit) {
+        runCatching { UpdateManager.checkAndMaybeUpdate(context) }
+    }
+
     var granted by remember {
         mutableStateOf(
             ContextCompat.checkSelfPermission(
@@ -114,7 +121,7 @@ private fun AppRoot() {
                 launcher.launch(perms.toTypedArray())
             }
         } else {
-            MainScaffold(factory)
+            MainScaffold(factory, app)
         }
     }
 }
@@ -141,7 +148,7 @@ private fun PermissionGate(onRequest: () -> Unit) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun MainScaffold(factory: AppViewModelFactory) {
+private fun MainScaffold(factory: AppViewModelFactory, app: SmartCallApp) {
     val navController = rememberNavController()
     val backStack by navController.currentBackStackEntryAsState()
     val current = backStack?.destination
@@ -187,7 +194,9 @@ private fun MainScaffold(factory: AppViewModelFactory) {
             composable(Dest.FOLLOWUPS.route) { FollowUpsScreen(viewModel(factory = factory)) }
             composable(Dest.REPORTS.route) { ReportsScreen(viewModel(factory = factory)) }
             composable(Dest.DEVICES.route) { DevicesScreen(viewModel(factory = factory)) }
-            composable(Dest.SETTINGS.route) { SettingsScreen(viewModel(factory = factory)) }
+            composable(Dest.SETTINGS.route) {
+                AdminGate(app.container.secure) { SettingsScreen(viewModel(factory = factory)) }
+            }
         }
     }
 }

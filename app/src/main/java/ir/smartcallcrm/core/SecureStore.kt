@@ -33,6 +33,11 @@ class SecureStore(context: Context) {
         get() = prefs.getString(KEY_SERVER_DEVICE_ID, null)
         set(value) = prefs.edit().putString(KEY_SERVER_DEVICE_ID, value).apply()
 
+    /** SHA-256 hash of the admin password that gates sensitive actions. */
+    var adminPasswordHash: String?
+        get() = prefs.getString(KEY_ADMIN_HASH, null)
+        set(value) = prefs.edit().putString(KEY_ADMIN_HASH, value).apply()
+
     val isRegistered: Boolean get() = !authToken.isNullOrBlank()
 
     fun clear() = prefs.edit().clear().apply()
@@ -40,5 +45,6 @@ class SecureStore(context: Context) {
     private companion object {
         const val KEY_TOKEN = "auth_token"
         const val KEY_SERVER_DEVICE_ID = "server_device_id"
+        const val KEY_ADMIN_HASH = "admin_pw_hash"
     }
 }
